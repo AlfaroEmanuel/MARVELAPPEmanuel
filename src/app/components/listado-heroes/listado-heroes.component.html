@@ -5,14 +5,18 @@
         <input type="text" [(ngModel)]="searchString" name="searchString" class="form-control" id="search" placeholder="Búsqueda de super-héroe">
         </div>
     </form>
-    <div *ngFor="let heroe of heroesService.heroes" class="col-xs-12 col-sm-6 col-md-3">
-        <a [routerLink]="'/heroe/' + heroe.id" class="hero-entry" [style.border-color]="heroesService['group_colors'][heroe.teamColor]" [style.background-image]="'url(' + heroe.thumbnail.path + '.' + heroe.thumbnail.extension + ')'">
-        <span>{{heroe.name}}</span>
-        </a>
+
+    <div class="col-xs-12" *ngIf="heroes != []">
+        <div class="hero-entry" *ngFor="let heroe of heroes.heroes" class="col-xs-12 col-sm-6 col-md-3">
+            <a [routerLink]="['/heroe', heroe.id]" class="hero-entry" [style.border-color]="heroesService['group_colors'][heroe.teamColor]" [style.background-image]="'url(' + heroe.thumbnail.path + '.' + heroe.thumbnail.extension + ')'">
+            <span>{{heroe.name}}</span>
+            </a>
+        </div>
     </div>
-    <div class="paginator col-xs-12">
-        <a class="paginator-prev" (click)="prevPage()" *ngIf="heroesService.page > 0">Prev</a>
-        Página {{heroesService.page + 1}} de {{heroesService.total}}
-        <a class="paginator-next" (click)="nextPage()" *ngIf="heroesService.page < heroesService.total - 1">Next</a>
+
+    <div class="paginator col-xs-12" *ngIf="heroes != []">
+        <a class="paginator-prev" (click)="prevPage()" *ngIf="getHeroesService().page > 0">Prev</a>
+        Página {{getHeroesService().page + 1}} de {{getHeroesService().total}}
+        <a class="paginator-next" (click)="nextPage()" *ngIf="getHeroesService().page < getHeroesService().total - 1">Next</a>
     </div>
 </div>

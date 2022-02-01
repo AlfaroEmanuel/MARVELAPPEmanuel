@@ -11,7 +11,7 @@ import { ListadoHeroesComponent } from './listado-heroes.component';
     CommonModule,
     FormsModule,
     ListadoHeroesRoutingModule
-  ]
+  ],
 })
 
 export class ListadoHeroesModule {}

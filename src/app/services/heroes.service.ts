@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Store } from '@ngrx/store';
+import * as actions from '../store/heroes.actions';
 import { Heroe } from '../classes/heroe';
 
 @Injectable({
@@ -21,8 +23,8 @@ export class HeroesService {
   public total = 0;
   public teams = new Map();
 
-  constructor(private http: HttpClient) { }
-
+  constructor( private _http: HttpClient, private _heroesStore: Store<{ heroes: Array<Heroe> }>) { }
+ 
   resetPager() {
     this.page = 0;
   }
@@ -32,9 +34,9 @@ export class HeroesService {
       this.page = page;
     }
     const url = 'http://localhost:3000/bff/v1/Api-Marvel-BFF/getheroes/' + (this.page * this.step)
-        + (nameStartsWith ? nameStartsWith : '')
+        + (nameStartsWith ? ('/' + nameStartsWith) : '');
 
-        this.http.get<any>(url).subscribe((data) => {
+        this._http.get<any>(url).subscribe((data) => {
         this.heroes = [];
         this.total = Math.ceil(data.data.total / this.step);
         data.data.results.forEach( result => {
@@ -49,13 +51,21 @@ export class HeroesService {
             ));
           }
         );
+        this._heroesStore.dispatch(actions.loadHeroes({heroes: this.heroes}));
       });
   }
 
   getHeroe(id) {
     const url = `http://localhost:3000/bff/v1/Api-Marvel-BFF/getheroe/${id}`
-    return this.http.get<any>(url);
+    return this._http.get<any>(url);
   } 
+
+  setHeroeTeam(hero) {
+    const url = `http://localhost:3000/bff/v1/Api-Marvel-BFF/setTeam/`
+    this._http.post<any>(url, hero.heroProfile).subscribe(data => {
+      console.log(data);
+    });
+  }
 
   getTeamColor(id):string{
     if(this.teams.get(id)!=undefined){
